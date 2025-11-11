@@ -203,7 +203,6 @@ export default function AboutSection() {
               </TooltipProvider>
             </div>
 
-            {/* الخبرات */}
             <div>
               <h3 className="text-2xl font-semibold mb-4">Experience</h3>
               <div className="space-y-4">
