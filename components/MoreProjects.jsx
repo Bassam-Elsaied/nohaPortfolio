@@ -28,7 +28,7 @@ export default function MoreProjects() {
       title: "Qanony-قانوني ",
       category: "Software Company",
       image: "/work-6.jpg",
-      link: "https://www.facebook.com/QanonyApp",
+      link: "https://docs.google.com/spreadsheets/d/18-55lbRGpXvrc96Yvg9FKb2hWspAbVOItB0C7DqGfhI/edit?gid=0#gid=0",
       description:
         "Managed and created content for Qanony’s Facebook presence, crafting engaging visuals and messaging that enhanced brand identity and audience engagement",
     },
