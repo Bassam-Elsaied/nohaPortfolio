@@ -80,7 +80,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* الشعار */}
-            <div className="text-white text-xl font-semibold">NE.</div>
+            <div className="text-white text-xl font-semibold">
+              Noha Elbendary.
+            </div>
 
             {/* قائمة التنقل للشاشات الكبيرة */}
             <ul className="hidden md:flex items-center gap-8">
