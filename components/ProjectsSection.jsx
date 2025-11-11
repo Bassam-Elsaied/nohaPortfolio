@@ -104,7 +104,7 @@ export default function FeaturedProjects() {
       title: "The Eagle Tour & Travel Agency",
       link: "https://www.facebook.com/theeagletravelagency",
       desc: "I managed and created social media content for The Eagle Travel Agency, crafting engaging posts and visuals that reflected the brand’s identity and boosted audience interaction.”",
-      img: "/work-1.jpg",
+      img: "/Work-1.jpg",
     },
     {
       badge: "Marketing Agency",
