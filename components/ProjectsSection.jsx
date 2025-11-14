@@ -1,18 +1,44 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function FeaturedProjects() {
+  const [projects, setProjects] = useState([]);
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
 
+  // Fetch featured projects from Sanity
   useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const query = `*[_type == "project" && isFeatured == true] | order(order asc) {
+          title,
+          category,
+          description,
+          image,
+          link
+        }`;
+        const data = await client.fetch(query);
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+    
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    if (projects.length === 0) return;
+    
     const container = containerRef.current;
     const cards = cardsRef.current;
 
@@ -96,31 +122,15 @@ export default function FeaturedProjects() {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [projects]);
 
-  const projects = [
-    {
-      badge: "Travel Company",
-      title: "The Eagle Tour & Travel Agency",
-      link: "https://www.facebook.com/theeagletravelagency",
-      desc: "I managed and created social media content for The Eagle Travel Agency, crafting engaging posts and visuals that reflected the brand’s identity and boosted audience interaction.”",
-      img: "/Work-1.jpg",
-    },
-    {
-      badge: "Marketing Agency",
-      title: "العطاء المستمر",
-      link: "https://www.facebook.com/profile.php?id=61567672930650",
-      desc: "Managed and created social-media posts for this profile, delivering engaging content and boosting audience interaction.",
-      img: "/work-2.jpg",
-    },
-    {
-      badge: "Health/Beauty",
-      title: "مركز الثقة لطب وتجميل الأسنان",
-      link: "https://www.facebook.com/profile.php?id=61570402612848",
-      desc: "Crafted stories and visuals that brought the brand’s voice to life and kept followers coming back for more.",
-      img: "/work-3.jpg",
-    },
-  ];
+  if (projects.length === 0) {
+    return (
+      <section className="relative h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-2xl">Loading projects...</div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -149,7 +159,7 @@ export default function FeaturedProjects() {
             {/* Background Image */}
             <div className="absolute inset-0">
               <Image
-                src={project.img}
+                src={project.image ? urlFor(project.image).width(1200).height(800).url() : "/placeholder.jpg"}
                 alt={project.title}
                 fill
                 className="object-cover"
@@ -165,7 +175,7 @@ export default function FeaturedProjects() {
               {/* Badge */}
               <div className="flex justify-start">
                 <span className="inline-block px-5 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-white">
-                  {project.badge}
+                  {project.category}
                 </span>
               </div>
 
@@ -175,7 +185,7 @@ export default function FeaturedProjects() {
                   <Link href={project.link}>{project.title}</Link>
                 </h3>
                 <p className="text-gray-300 text-lg md:text-xl max-w-2xl leading-relaxed">
-                  {project.desc}
+                  {project.description}
                 </p>
               </div>
             </div>

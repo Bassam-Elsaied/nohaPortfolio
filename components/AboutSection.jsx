@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Badge } from "@/components/ui/badge";
@@ -11,10 +11,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutSection() {
+  const [aboutData, setAboutData] = useState(null);
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -22,7 +25,29 @@ export default function AboutSection() {
   const experienceRef = useRef([]);
   const imageRef = useRef(null);
 
+  // Fetch data from Sanity
   useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const query = `*[_type == "aboutMe"][0]{
+          title,
+          description,
+          image,
+          skills,
+          experiences
+        }`;
+        const data = await client.fetch(query);
+        setAboutData(data);
+      } catch (error) {
+        console.error("Error fetching about data:", error);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
+  useEffect(() => {
+    if (!aboutData) return;
     const ctx = gsap.context(() => {
       // أنيميشن العنوان
       gsap.from(titleRef.current, {
@@ -94,58 +119,21 @@ export default function AboutSection() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [aboutData]);
 
-  const skills = [
-    {
-      name: "Content Writing",
-      description:
-        "Content Writing & Copywriting for different business categories.",
-    },
-    {
-      name: "Social Media Management",
-      description:
-        "Social Media Management across multiple platforms (Facebook, Instagram, TikTok, LinkedIn).",
-    },
-    {
-      name: "SWOT Analysis",
-      description: "SWOT Analysis for projects and competitors.",
-    },
-    {
-      name: "Media Buying",
-      description: "Media Buying (Facebook Ads, Snapchat Ads).",
-    },
-    {
-      name: "Market Research",
-      description: "Market Research & competitor analysis.",
-    },
-    {
-      name: "Content Planning",
-      description: "Content Planning and calendar creation.",
-    },
-    {
-      name: "Brand Positioning",
-      description: "Brand Positioning & defining mission/vision.",
-    },
-    {
-      name: "Adaptability to various industries",
-      description:
-        "Adaptability to various industries (Education, Software, E-commerce, Skincare, Legal, etc.).",
-    },
-  ];
+  // Show loading or fallback while data is being fetched
+  if (!aboutData) {
+    return (
+      <section
+        id="about-me"
+        className="min-h-screen bg-black text-white py-20 px-6 flex items-center justify-center"
+      >
+        <div className="text-2xl">Loading...</div>
+      </section>
+    );
+  }
 
-  const experiences = [
-    {
-      role: "social media specialist",
-      company: "ENS",
-      period: "Currently",
-    },
-    {
-      role: "content writer",
-      company: "Creative Mind",
-      period: "Currently",
-    },
-  ];
+  const { title, description, image, skills, experiences } = aboutData;
 
   return (
     <section
@@ -161,16 +149,13 @@ export default function AboutSection() {
               ref={titleRef}
               className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
             >
-              Meet Noha
+              {title}
             </h2>
             <p
               ref={descriptionRef}
               className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed"
             >
-              With creative ideas, and a problem-solving mindset to every
-              project. My goal is to help businesses enhance their online
-              presence, connect with their audience, and improve engagement
-              through effective social media strategies
+              {description}
             </p>
 
             {/* المهارات */}
@@ -224,8 +209,8 @@ export default function AboutSection() {
           {/* الصورة */}
           <div ref={imageRef} className="flex justify-center lg:justify-end">
             <Image
-              src="/myPhoto2.jpg"
-              alt="Noha"
+              src={image ? urlFor(image).url() : "/myPhoto2.jpg"}
+              alt={title}
               width={700}
               height={500}
               className="rounded-3xl"

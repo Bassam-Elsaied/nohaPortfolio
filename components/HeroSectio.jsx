@@ -7,6 +7,7 @@ import BlurText from "./BlurText";
 import AnimatedBadge from "./AnimatedBadge";
 import { gsap } from "gsap";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   const [vantaEffect, setVantaEffect] = useState(null);
@@ -93,9 +94,12 @@ export default function Hero() {
               Download CV
             </a>
           </button>
-          <button className="px-6 py-3 bg-white hover:bg-white/70 font-semibold  text-black rounded-2xl border border-white/20 transition cursor-pointer">
+          <Link
+            href="#contact"
+            className="px-6 py-3 bg-white hover:bg-white/70 font-semibold  text-black rounded-2xl border border-white/20 transition cursor-pointer"
+          >
             Contact Me
-          </button>
+          </Link>
         </div>
       </div>
 

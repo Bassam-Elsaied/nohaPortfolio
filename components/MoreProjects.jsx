@@ -1,38 +1,39 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 
 export default function MoreProjects() {
-  const moreProjects = [
-    {
-      id: 1,
-      title: "Ordery",
-      category: "E-commerce",
-      image: "/work-4.jpg",
-      link: "https://docs.google.com/spreadsheets/d/1LBU23e8wB0IiaILL8JxBwbcegnBbhWzDRE8sOw5Wdds/edit?gid=0#gid=0",
-      description:
-        "I managed and created social media content for Ordery, crafting engaging posts and visuals that reflected the brand’s identity and boosted audience interaction.",
-    },
-    {
-      id: 2,
-      title: "Creative Minds",
-      category: "Software Company",
-      image: "/work-5.jpg",
-      link: "https://docs.google.com/spreadsheets/d/1PYEIsrtzg7TeFRbnNnR5jT1x54_997BGdqzgOqBOrTM/edit?gid=0#gid=0",
-      description:
-        "We're geeks, we're creative, we develop, we make solutions.",
-    },
-    {
-      id: 3,
-      title: "Qanony-قانوني ",
-      category: "Software Company",
-      image: "/work-6.jpg",
-      link: "https://docs.google.com/spreadsheets/d/18-55lbRGpXvrc96Yvg9FKb2hWspAbVOItB0C7DqGfhI/edit?gid=0#gid=0",
-      description:
-        "Managed and created content for Qanony’s Facebook presence, crafting engaging visuals and messaging that enhanced brand identity and audience engagement",
-    },
-  ];
+  const [moreProjects, setMoreProjects] = useState([]);
+
+  // Fetch non-featured projects from Sanity
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const query = `*[_type == "project" && isFeatured == false] | order(order asc) {
+          _id,
+          title,
+          category,
+          description,
+          image,
+          link
+        }`;
+        const data = await client.fetch(query);
+        setMoreProjects(data);
+      } catch (error) {
+        console.error("Error fetching more projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (moreProjects.length === 0) {
+    return null; // Don't show the section if no projects
+  }
 
   return (
     <section className="relative bg-black text-white py-20 px-6">
@@ -52,13 +53,17 @@ export default function MoreProjects() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {moreProjects.map((project) => (
             <div
-              key={project.id}
+              key={project._id}
               className="group relative bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition-all duration-500 cursor-pointer"
             >
               {/* Image Container */}
               <div className="relative h-64 w-full overflow-hidden">
                 <Image
-                  src={project.image}
+                  src={
+                    project.image
+                      ? urlFor(project.image).width(600).height(400).url()
+                      : "/placeholder.jpg"
+                  }
                   alt={project.title}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
