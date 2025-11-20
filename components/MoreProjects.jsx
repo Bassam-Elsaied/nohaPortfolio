@@ -19,7 +19,8 @@ export default function MoreProjects() {
           category,
           description,
           image,
-          link
+          link,
+          buttonText
         }`;
         const data = await client.fetch(query);
         setMoreProjects(data);
@@ -91,7 +92,7 @@ export default function MoreProjects() {
                   href={project.link}
                   className="bg-white text-black px-4 py-2 rounded-full block w-full text-center mt-4 font-semibold"
                 >
-                  Content plan
+                  {project.buttonText || "Content plan"}
                 </Link>
               </div>
             </div>

@@ -32,13 +32,13 @@ export default function FeaturedProjects() {
         console.error("Error fetching projects:", error);
       }
     };
-    
+
     fetchProjects();
   }, []);
 
   useEffect(() => {
     if (projects.length === 0) return;
-    
+
     const container = containerRef.current;
     const cards = cardsRef.current;
 
@@ -141,9 +141,9 @@ export default function FeaturedProjects() {
       <div className="  text-center z-20">
         <h2 className="text-4xl md:text-5xl font-bold">Featured Works</h2>
         <p className="text-gray-400 mt-2 ">
-          These selected projects reflect my passion for blending strategy with
-          creativity — solving real problems through thoughtful ideas and
-          impactful storytelling
+          Craft ideas into compelling stories that drive success, enhance brand
+          credibility, engage audiences, and expand my knowledge every
+          step of the way.
         </p>
       </div>
 
@@ -159,7 +159,11 @@ export default function FeaturedProjects() {
             {/* Background Image */}
             <div className="absolute inset-0">
               <Image
-                src={project.image ? urlFor(project.image).width(1200).height(800).url() : "/placeholder.jpg"}
+                src={
+                  project.image
+                    ? urlFor(project.image).width(1200).height(800).url()
+                    : "/placeholder.jpg"
+                }
                 alt={project.title}
                 fill
                 className="object-cover"

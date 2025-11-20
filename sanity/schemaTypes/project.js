@@ -39,6 +39,13 @@ export default {
       validation: Rule => Rule.required()
     },
     {
+      name: 'buttonText',
+      title: 'Button Text',
+      type: 'string',
+      description: 'Text shown on the button (e.g., "Content plan", "View Project")',
+      initialValue: 'Content plan'
+    },
+    {
       name: 'isFeatured',
       title: 'Featured Project',
       type: 'boolean',
